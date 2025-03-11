@@ -18,10 +18,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from web_project.views import SystemView
+from .views import MiscPagesView
+from . import views
+
+def misc_page(template_name, name):
+    return MiscPagesView.as_view(template_name=template_name, name=name)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("apps.pages.urls")),
+    path("pages/misc/error/", misc_page("pages_misc_error.html", "pages-misc-error")),
+    path("pages/misc/under_maintenance/", misc_page("pages_misc_under_maintenance.html", "pages-misc-under-maintenance")),
+    path("pages/misc/comingsoon/", misc_page("pages_misc_comingsoon.html", "pages-misc-comingsoon")),
+    path("pages/misc/not_authorized/", misc_page("pages_misc_not_authorized.html", "pages-misc-not-authorized")),
+    path('libros/', views.LibroListView.as_view(), name='libro_list'),
+    path('libros/<int:pk>/', views.LibroDetailView.as_view(), name='libro_detail'),
+    path('libros/nuevo/', views.LibroCreateView.as_view(), name='libro_create'),
+    path('libros/<int:pk>/editar/', views.LibroUpdateView.as_view(), name='libro_update'),
+    path('libros/<int:pk>/eliminar/', views.LibroDeleteView.as_view(), name='libro_delete'),
 ]
 
 handler404 = SystemView.as_view(template_name="pages_misc_error.html", status=404)
